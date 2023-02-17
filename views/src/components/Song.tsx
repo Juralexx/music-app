@@ -15,28 +15,28 @@ const Song: React.FC<Props> = ({ music }) => {
     const { player } = React.useContext(PlayerContext)
 
     return (
-        <SongItem className='list__item'
+        <SongItem className='music__item'
             onClick={() => {
                 onMusicClick(track, setTrack, music, player, musics.all)
                 localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
             }}
         >
-            <div className='list__item-left'>
-                <div className='list__item-icon'>
-                    <Icon name="MusicFile" className='list__item-note' />
+            <div className='music__item-left'>
+                <div className='music__item-icon'>
+                    <Icon name="MusicFile" className='music__item-note' />
                 </div>
-                <div className='list__item-infos'>
-                    <div className='list__item-title'>
+                <div className='music__item-infos'>
+                    <div className='music__item-title'>
                         {music.title}
                     </div>
-                    <div className='list__item-artist'>
+                    <div className='music__item-artist'>
                         <span>{music.metadatas.common.artist ? music.metadatas.common.artist : 'Artiste inconnu'}</span>
                         <span>{music.metadatas.common.artist && music.metadatas.common.album && '|'}</span>
                         <span>{music.metadatas?.common?.album}</span>
                     </div>
                 </div>
             </div>
-            <div className='list__item-time'>
+            <div className='music__item-time'>
                 {timeFormat(music.metadatas.format.duration)}
             </div>
         </SongItem>
@@ -66,18 +66,18 @@ const SongItem = styled.div`
 
     &:hover {
         color : var(--primary);
-        .list__item-note {
+        .music__item-note {
             color : var(--primary)
         }
     }
 
-    .list__item-left {
+    .music__item-left {
         display     : flex;
         align-items : center;
         width       : 70%;
     }
 
-    .list__item-icon {
+    .music__item-icon {
         position         : relative;
         border-radius    : var(--rounded-md);
         min-height       : 50px;
@@ -85,7 +85,7 @@ const SongItem = styled.div`
         color            : var(--svg);
         background-color : var(--x-light);
 
-        .list__item-note {
+        .music__item-note {
             position  : absolute;
             top       : 50%;
             left      : 50%;
@@ -96,11 +96,11 @@ const SongItem = styled.div`
         }
     }
 
-    .list__item-infos {
+    .music__item-infos {
         padding-left : 15px;
 
-        .list__item-title,
-        .list__item-artist {
+        .music__item-title,
+        .music__item-artist {
             width              : 100%;
             text-overflow      : ellipsis;
             overflow           : hidden;
@@ -109,13 +109,13 @@ const SongItem = styled.div`
             -webkit-box-orient : vertical;
         }
 
-        .list__item-title {
+        .music__item-title {
             font-weight        : 500;
             line-height        : 24px;
             max-height         : 25px;
         }
 
-        .list__item-artist {
+        .music__item-artist {
             font-size          : 12px;
             line-height        : 19px;
             color              : var(--text-secondary);
@@ -129,7 +129,7 @@ const SongItem = styled.div`
         }
     }
 
-    .list__item-time {
+    .music__item-time {
         width           : 30%;
         padding-right   : 10px;
         display         : flex;

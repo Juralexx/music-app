@@ -15,34 +15,34 @@ const SongActive: React.FC = () => {
     const { timeRange } = usePlayer(player)
 
     return (
-        <SongItem className={`list__item active`}
+        <SongItem className={`music__item active`}
             onClick={() => {
                 onMusicClick(track, setTrack, track.song, player, musics.all)
                 localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
             }}
         >
-            <div className='list__item-left'>
+            <div className='music__item-left'>
                 <PlayerIcon
                     isPlaying={track.isPlaying}
                     currentTime={timeRange.currentTime}
                     duration={timeRange.duration}
                 />
-                <div className='list__item-infos'>
-                    <div className='list__item-title'>
+                <div className='music__item-infos'>
+                    <div className='music__item-title'>
                         {track.song.title}
                     </div>
-                    <div className='list__item-artist'>
+                    <div className='music__item-artist'>
                         <span>{track.song.metadatas.common.artist ? track.song.metadatas.common.artist : 'Artiste inconnu'}</span>
                         <span>{track.song.metadatas.common.artist && track.song.metadatas.common.album && '|'}</span>
                         <span>{track.song.metadatas?.common?.album}</span>
                     </div>
                 </div>
             </div>
-            <div className='list__item-time'>
+            <div className='music__item-time'>
                 {track.isPlaying ? (
-                    <AudioLoaderActive className='list__item-animation' />
+                    <AudioLoaderActive className='music__item-animation' />
                 ) : (
-                    <AudioLoader className='list__item-animation' />
+                    <AudioLoader className='music__item-animation' />
                 )}
                 {timeFormat(track.song.metadatas.format.duration)}
             </div>
@@ -73,38 +73,38 @@ const SongItem = styled.div`
 
     &:hover {
         color : var(--primary);
-        .list__item-note {
+        .music__item-note {
             color : var(--primary)
         }
     }
 
     &.active {
-        .list__item-title {
+        .music__item-title {
             color : var(--primary)
         }
-        .list__item-icon {
+        .music__item-icon {
             border-radius    : var(--rounded-full);
         }
-        .list__item-animation {
+        .music__item-animation {
             display : block;
         }
     }
 
-    .list__item-left {
+    .music__item-left {
         display     : flex;
         align-items : center;
         width       : 70%;
     }
 
-    .list__item-icon {
+    .music__item-icon {
         position         : relative;
         border-radius    : var(--rounded-md);
         min-height       : 50px;
         min-width        : 50px;
         color            : var(--svg);
         background-color : var(--x-light);
-        .list__item-play,
-        .list__item-note {
+        .music__item-play,
+        .music__item-note {
             position  : absolute;
             top       : 50%;
             left      : 50%;
@@ -113,7 +113,7 @@ const SongItem = styled.div`
             width     : 24px;
             z-index   : 1;
         }
-        .list__item-play {
+        .music__item-play {
             left  : 54%;
             color : var(--primary);
         }
@@ -131,11 +131,11 @@ const SongItem = styled.div`
         }
     }
 
-    .list__item-infos {
+    .music__item-infos {
         padding-left : 15px;
 
-        .list__item-title,
-        .list__item-artist {
+        .music__item-title,
+        .music__item-artist {
             width              : 100%;
             text-overflow      : ellipsis;
             overflow           : hidden;
@@ -144,13 +144,13 @@ const SongItem = styled.div`
             -webkit-box-orient : vertical;
         }
 
-        .list__item-title {
+        .music__item-title {
             font-weight        : 500;
             line-height        : 24px;
             max-height         : 25px;
         }
 
-        .list__item-artist {
+        .music__item-artist {
             font-size          : 12px;
             line-height        : 19px;
             color              : var(--text-secondary);
@@ -164,7 +164,7 @@ const SongItem = styled.div`
         }
     }
 
-    .list__item-time {
+    .music__item-time {
         width           : 30%;
         padding-right   : 10px;
         display         : flex;
@@ -175,7 +175,7 @@ const SongItem = styled.div`
         line-height     : 13px;
     }
 
-    .list__item-animation {
+    .music__item-animation {
         display : none;
         height  : 25px;
         color   : var(--primary);
