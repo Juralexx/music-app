@@ -12,13 +12,17 @@ import Album from './Album'
 import Icon from './tools/icons/Icon'
 import { IconInput } from './tools/Inputs'
 import { addActive, removeAccents } from './tools/Utils'
+import { Logo } from './tools/Logo'
 
 export interface SearchProps {
     state: boolean,
     query: string,
     type: string,
     results: any,
-    filteredResults: any
+    songsResults: any,
+    albumsResults: any,
+    artistsResults: any,
+    filteredResults: any,
 }
 
 const defaultSearchProps: SearchProps = {
@@ -26,7 +30,10 @@ const defaultSearchProps: SearchProps = {
     query: '',
     type: 'all',
     results: [],
-    filteredResults: []
+    songsResults: [],
+    albumsResults: [],
+    artistsResults: [],
+    filteredResults: [],
 }
 
 interface Props {
@@ -38,10 +45,15 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
     const { musics } = React.useContext(MusicsContext)
     const { track } = React.useContext(TrackContext)
 
+    const searchResultsRefs = React.useRef([])
     const [search, setSearch] = React.useState<SearchProps>(defaultSearchProps)
 
     const artists = Object.entries(musics.artists).map(([key, value]) => ({ type: 'artist', name: key, songs: value }))
     const albums = Object.entries(musics.albums).map(([_, value]) => ({ type: 'album', ...value })).filter(e => e.title !== undefined)
+
+    /**
+     * 
+     */
 
     const launchSearch = (query: string) => {
         setSearch(prev => ({ ...prev, query: query }))
@@ -56,13 +68,43 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
             const artistsResults = artists.filter((artist: any) => regexp.test(removeAccents(artist['name'])))
 
             const results = [...songsResults.slice(0, 8), ...albumsResults.slice(0, 8), ...artistsResults.slice(0, 8)]
+            setSearch(prev => ({ ...prev, results: results, songsResults: songsResults, albumsResults: albumsResults, artistsResults: artistsResults }))
 
-            setSearch(prev => ({ ...prev, results: results, filteredResults: results }))
-            if (isEmpty) {
-                return
+            if (search.type === 'all') {
+                setSearch(prev => ({ ...prev, filteredResults: results }))
+                if (isEmpty) return
+            } else if (search.type === 'songs') {
+                setSearch(prev => ({ ...prev, filteredResults: songsResults }))
+                if (isEmpty) return
+            } else if (search.type === 'albums') {
+                setSearch(prev => ({ ...prev, filteredResults: albumsResults }))
+                if (isEmpty) return
+            } else if (search.type === 'artists') {
+                setSearch(prev => ({ ...prev, filteredResults: artistsResults }))
+                if (isEmpty) return
             }
+        } else setSearch(prev => ({ ...prev, results: [], filteredResults: [] }))
+
+        let musicsTitles = document.getElementsByClassName('music__item-title');
+        let albumsTitles = document.getElementsByClassName('album__item-title');
+        let artistName = document.getElementsByClassName('artist__item-title');
+        let regex = new RegExp(query, 'i');
+
+        for (let i = 0; i < musicsTitles.length; i++) {
+            musicsTitles[i].innerHTML = (musicsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
+        }
+        for (let i = 0; i < albumsTitles.length; i++) {
+            albumsTitles[i].innerHTML = (albumsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
+        }
+        for (let i = 0; i < artistName.length; i++) {
+            artistName[i].innerHTML = (artistName[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
         }
     }
+
+    /**
+     * 
+     */
+
     const [album, setAlbum] = React.useState<AlbumInterface>({ active: false, album: albums[0] })
     const [artist, setArtist] = React.useState<ArtistInterface>({ active: false, artist: musics.artists[0] })
 
@@ -88,24 +130,24 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                     <Icon name="List" />
                 </div>
                 <div className={`search__choice ${addActive(search.type === 'songs')}`}
-                    onClick={() => setSearch(prev => ({ ...prev, type: 'songs', filteredResults: search.results.filter((e: any) => e.type !== 'artist' && e.type !== 'album') }))}
+                    onClick={() => setSearch(prev => ({ ...prev, type: 'songs', filteredResults: search.songsResults }))}
                 >
                     <Icon name="Music" />
                 </div>
                 <div className={`search__choice ${addActive(search.type === 'albums')}`}
-                    onClick={() => setSearch(prev => ({ ...prev, type: 'albums', filteredResults: search.results.filter((e: any) => e.type === 'album') }))}
+                    onClick={() => setSearch(prev => ({ ...prev, type: 'albums', filteredResults: search.albumsResults }))}
                 >
                     <Icon name="CD" />
                 </div>
                 <div className={`search__choice ${addActive(search.type === 'artists')}`}
-                    onClick={() => setSearch(prev => ({ ...prev, type: 'artists', filteredResults: search.results.filter((e: any) => e.type === 'artist') }))}
+                    onClick={() => setSearch(prev => ({ ...prev, type: 'artists', filteredResults: search.artistsResults }))}
                 >
                     <Icon name="Micro" />
                 </div>
             </div>
-            <div className='search__results'>
-                {search.filteredResults.length > 0 &&
-                    search.filteredResults.map((element: any, i: number) => {
+            {search.filteredResults.length > 0 &&
+                <div className='search__results'>
+                    {search.filteredResults.map((element: any, i: number) => {
                         return (
                             <div key={i}>
                                 {!element.type && (
@@ -129,9 +171,17 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                                 }
                             </div>
                         )
-                    })
-                }
-            </div>
+                    })}
+                </div>
+            }
+            {search.filteredResults.length === 0 &&
+                <div className='search__results-full'>
+                    <div className='search__results-empty'>
+                        <Logo />
+                        <p>Rien à afficher...</p>
+                    </div>
+                </div>
+            }
             {album?.album !== undefined &&
                 <AlbumSongs
                     album={album}
@@ -216,12 +266,41 @@ const SearchContainer = styled.div`
         }
     }
 
+    .hightlight {
+        color       : var(--primary);
+        font-weight : 600;
+    }
+
     .search__results {
         display               : grid;
         grid-template-columns : 1fr;
         width                 : 100%;
         height                : auto;
+        max-height            : calc(100% - 100px);
         padding-bottom        : 40px;
         overflow-y            : auto;
+    }
+
+    .search__results-full {
+        display         : flex;
+        align-items     : center;
+        justify-content : center;
+        height          : 350px;
+        width           : 100%;
+        padding         : 10px 0;
+    }
+
+    .search__results-empty {
+        svg {
+            margin : 0 auto;
+            height : 100px;
+            width  : 100px;
+            color  : var(--primary);
+        }
+        p {
+            font-size   : 16px;
+            padding     : 10px 0;
+            font-weight : 500;
+        }
     }
 `
