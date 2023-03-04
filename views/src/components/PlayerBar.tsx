@@ -108,6 +108,7 @@ const MusicPlayer = styled.div`
     padding          : 35px 20px 15px;
     background-color : var(--content-light);
     box-shadow       : var(--shadow-top), var(--shadow-relief);
+    border-top       : 1px solid var(--light-border);
 
     @media(max-width: 768px) {
         padding : 35px 10px 10px;

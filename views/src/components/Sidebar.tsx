@@ -41,6 +41,7 @@ const SideBar = styled.div`
     height           : 100vh;
     background-color : var(--content-light);
     box-shadow       : var(--shadow-left);
+    border-right     : 1px solid var(--light-border);
 
     @media (max-width: 992px) {
         width     : 100%;
