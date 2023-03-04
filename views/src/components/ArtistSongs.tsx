@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import Icon from './tools/icons/Icon'
 import { ArtistInterface } from './pages/Artists'
-import { CurrentSong } from '../App'
 import SongArtist from './SongArtist'
+import { CurrentSong } from '../types/types'
 
 interface Props {
     artist: ArtistInterface
@@ -18,7 +18,7 @@ const ArtistSongs: React.FC<Props> = ({ artist, setArtist }) => {
                 <h2>{artist.artist.name || 'Artistes inconnus'}</h2>
             </div>
             <div className='album-list__container'>
-                {artist.artist.songs.map((music: CurrentSong['song'], i: number) => {
+                {artist.artist.songs.map((music: CurrentSong.Props['song'], i: number) => {
                     return (
                         <SongArtist
                             key={i}

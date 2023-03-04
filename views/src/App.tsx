@@ -16,81 +16,24 @@ import Player from './components/Player';
 import Home from './components/pages/Home';
 import { IconInput } from './components/tools/Inputs';
 import Icon from './components/tools/icons/Icon';
-// import { AnimatedLogo } from './components/tools/Logo';
-
-export interface Musics {
-    all: object[],
-    sorted: {
-        [key: string]: any
-    },
-    artists: {
-        [key: string]: any
-    },
-    albums: {
-        [key: string]: any
-    }
-}
-
-const defaultMusics: Musics = {
-    all: [],
-    sorted: {},
-    artists: {},
-    albums: {}
-}
-
-export interface CurrentSong {
-    isPlaying: boolean,
-    song: {
-        _id?: string,
-        url?: string,
-        title?: string,
-        artist?: string,
-        currentTime?: number
-        remainingTime?: number,
-        metadatas?: any,
-    },
-    context: {
-        name?: string,
-        songs?: any[]
-    }
-}
-
-const defaultCurrentSong: CurrentSong = {
-    isPlaying: false,
-    song: {
-        _id: String(),
-        url: String(),
-        title: String(),
-        artist: String(),
-        currentTime: Number(),
-        remainingTime: Number(),
-        metadatas: {}
-    },
-    context: {
-        name: String(),
-        songs: []
-    }
-}
-
-export interface PlayerProps {
-    open: boolean,
-    mode: string
-}
-
-const defaultPlayerProps: PlayerProps = {
-    open: false,
-    mode: 'shuffle'
-}
+import { AnimatedLogo } from './components/tools/Logo';
+import { CurrentSong, Musics, AudioPlayer } from './types/types';
 
 const App: React.FC = () => {
-    const [musics, setMusics] = React.useState<Musics>(defaultMusics)
-    const [track, setTrack] = React.useState<CurrentSong>(defaultCurrentSong)
+    const [musics, setMusics] = React.useState<Musics.Props>(Musics.defaultProps)
+    const [track, setTrack] = React.useState<CurrentSong.Props>(CurrentSong.defaultProps)
     const [isLoading, setLoading] = React.useState<boolean>(true)
 
     React.useEffect(() => {
         if (musics.all.length === 0) {
             const fetchMusics = async () => {
-                await axios.get(`${process.env.REACT_APP_API_URL}/datas`)
+                await axios({
+                    method: 'GET',
+                    url: `${process.env.REACT_APP_API_URL}/datas`,
+                    headers: {
+                        'Authorization': process.env.REACT_APP_ACCESS_TOKEN
+                    }
+                })
                     .then(res => {
                         const all = sortByAlphabetical(res.data, 'title')
                         const sorted = groupeByAlphabeticalOrder(res.data, 'title')
@@ -150,7 +93,7 @@ const App: React.FC = () => {
 
     const player = React.useRef(new Audio(`${process.env.REACT_APP_API_URL}${track.song.url}`)) as React.RefObject<HTMLMediaElement>
 
-    const [playerProps, setPlayerProps] = React.useState<PlayerProps>(defaultPlayerProps)
+    const [playerProps, setPlayerProps] = React.useState<AudioPlayer.Props>(AudioPlayer.defaultProps)
 
     React.useEffect(() => {
         if (player.current !== null) {
@@ -280,11 +223,11 @@ const App: React.FC = () => {
                         </TrackContext.Provider>
                     </LoadingContext.Provider>
                 </MusicsContext.Provider>
-                {/* {isLoading &&
+                {isLoading &&
                     <div className="loader">
                         <AnimatedLogo />
                     </div>
-                } */}
+                }
             </BrowserRouter>
         </RootContainer>
     );
