@@ -12,6 +12,9 @@ data.json
 
 # production
 /build
+/data
+/albums
+/albums-compressed
 
 # misc
 .DS_Store
