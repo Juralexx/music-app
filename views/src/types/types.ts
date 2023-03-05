@@ -6,6 +6,10 @@ declare global {
     }
 }
 
+/**
+ * 
+ */
+
 export namespace Musics {
     export interface Props {
         all: object[],
@@ -27,6 +31,10 @@ export namespace Musics {
         albums: {}
     }
 }
+
+/**
+ * 
+ */
 
 export namespace CurrentSong {
     export interface Props {
@@ -64,14 +72,72 @@ export namespace CurrentSong {
     }
 }
 
+/**
+ * 
+ */
+
 export namespace AudioPlayer {
     export interface Props {
         open: boolean,
         mode: string
     }
-    
+
     export const defaultProps = {
         open: false,
         mode: 'shuffle'
+    }
+}
+
+export namespace IArtist {
+    export interface Props {
+        active: boolean,
+        artist: {
+            name: string,
+            songs: any[]
+        }
+    }
+}
+
+/**
+ * 
+ */
+
+export namespace IAlbum {
+    export interface Props {
+        active: boolean,
+        album: {
+            title: string,
+            artist: string,
+            year: string,
+            songs: object[]
+        }
+    }
+}
+
+/**
+ * 
+ */
+
+export namespace SearchProps {
+    export interface Props {
+        state: boolean,
+        query: string,
+        type: string,
+        results: any,
+        songsResults: any,
+        albumsResults: any,
+        artistsResults: any,
+        filteredResults: any,
+    }
+
+    export const defaultProps = {
+        state: false,
+        query: '',
+        type: 'all',
+        results: [],
+        songsResults: [],
+        albumsResults: [],
+        artistsResults: [],
+        filteredResults: [],
     }
 }
