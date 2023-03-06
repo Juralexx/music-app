@@ -141,7 +141,8 @@ app.get('/create/datas', async (req, res) => {
         }
 
         const title = file.substring(file.lastIndexOf("\\") + 1, file.lastIndexOf("."))
-        const url = file.substring(file.lastIndexOf(MUSICS_ROUTE), file.length)
+        const pathPortions = file.split('\\')
+        const url = `${SERVER_URL}/musics/${pathPortions[pathPortions.length - 2]}/${pathPortions[pathPortions.length - 1]}`
 
         let pictureLocalPath = null
         let pictureServerPath = null
@@ -198,11 +199,10 @@ app.get('/create/datas', async (req, res) => {
                 });
             files = []
         }
-        return arr
     })
-    Promise.all(response).then(res => {
+    Promise.all(response).then(() => {
         const picturesFolders = ThroughDirectory(`${__dirname}/albums`)
-        picturesFolders.map(picture => {
+        picturesFolders.map((picture, i) => {
             let pathPortions = picture.split('\\')
             const __directory = pathPortions[pathPortions.length - 2]
             const filename = picture.substring(picture.lastIndexOf("\\") + 1, picture.lastIndexOf("."))
@@ -219,6 +219,11 @@ app.get('/create/datas', async (req, res) => {
                     (err) => {
                         if (err) console.error(err)
                     })
+
+            if (i === picturesFolders.length + 1) {
+                fs.rmSync(`${__dirname}/albums`, { recursive: true, force: true })
+                fs.renameSync(`${__dirname}/albums-compressed`, `${__dirname}/albums`)
+            }
         })
     })
 })
