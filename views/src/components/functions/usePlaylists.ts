@@ -1,8 +1,9 @@
 import React from 'react'
 import axios from 'axios'
+import { IPlaylist } from '../../types/types'
 
 const usePlaylists = () => {
-    const [playlists, setPlaylists] = React.useState<Array<any>>([])
+    const [playlists, setPlaylists] = React.useState<Array<IPlaylist.Props>>([])
 
     React.useEffect(() => {
         if (playlists.length === 0) {
