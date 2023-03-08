@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Song } from '../types/types'
 import Icon from './tools/icons/Icon'
 
 interface Props {
     artist: {
         name: string,
-        songs: any[]
+        songs: Array<Song.Props>
     },
     onClick: () => void
 }
@@ -20,7 +21,7 @@ const Artist: React.FC<Props> = ({ artist, onClick }) => {
                         {artist.name}
                     </div>
                     <div className='artist__item-artist'>
-                        <span>{artist.songs.length} chansons</span>
+                        <span>{artist.songs.length} songs</span>
                     </div>
                 </div>
             </div>
