@@ -20,7 +20,7 @@ const GlobalStyles = createGlobalStyle`
         padding         : 0;
         box-sizing      : border-box;
         text-decoration : none;
-        z-index         : 1;
+        /* z-index         : 1; */
     }
 
     html {
@@ -144,7 +144,7 @@ const GlobalStyles = createGlobalStyle`
         }
     }
 
-    input[type="range"] {
+    input[type="range"]:not(.__equalizer) {
         -webkit-appearance : none;
         height             : 4px;
         background         : var(--input-track);
@@ -166,10 +166,9 @@ const GlobalStyles = createGlobalStyle`
 
         &::-webkit-slider-thumb {
             -webkit-appearance : none;
-            height             : 13px;
-            width              : 13px;
-            background         : var(--content-light);
-            border             : 3px solid var(--primary);
+            height             : 10px;
+            width              : 10px;
+            background         : var(--text);
             border-radius      : var(--rounded-full);
             cursor             : pointer;
             transition         : background 0.3s ease-in-out;
@@ -191,8 +190,7 @@ const GlobalStyles = createGlobalStyle`
             -webkit-appearance : none;
             height             : 10px;
             width              : 10px;
-            background         : var(--content-light);
-            border             : 3px solid var(--primary);
+            background         : var(--text);
             border-radius      : var(--rounded-full);
             cursor             : pointer;
             transition         : background 0.3s ease-in-out;

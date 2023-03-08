@@ -127,6 +127,8 @@ const variables = css`
         --shadow-right        : -8px 0 12px -3px rgba(0 0 0 / 15%);
         --shadow-inset-bottom : inset 0px -30px 33px -10px rgb(28 9 80 / 5%);
         --shadow-relief       : inset 0 1px 0 0 hsl(0deg 0% 100% / 5%);
+
+        --shadow-dark : 0 1px .625rem 0 rgba(7, 10, 13, .6), 0 .125rem .25rem 0 rgba(7, 10, 13, .4);
         
         --shadow-tiny       : rgb(35 34 33 / 17%) 0px 1px 4px 1px;
         --shadow-x-tiny     : 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
@@ -157,72 +159,25 @@ const variables = css`
         --easing     : cubic-bezier(0.645, 0.045, 0.355, 1);
         --transition : all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
 
-        --facebook  : #1a478a;
-        --instagram : #c72a9d;
-        --twitter   : #55acef;
-        --snapchat  : #fffc00;
-        --youtube   : #e91e00;
-        --twitch    : #9147ff;
-        --pinterest : #cb2229;
-        --whatsapp  : #25D366;
-        --linkedin  : #007bb6;
-        --website   : var(--primary);
-
-        --nodejs    : #539e43;
-        --js        : #f7df1e;
-        --react     : #61dafb;
-        --redux     : #764abc;
-        --expressjs : #ffffff;
-        --html      : #f16528;
-        --css       : #2a65f1;
-        --bootstrap : #6b10f4;
-        --gulp      : #da4648;
-        --tailwind  : #38bdf8;
-        --stylus    : #ffffff;
-        --sass      : #cd6799;
-        --postman   : #ff6c37;
-
-        --primary           : #4383e7;
-        --primary-rgb       : 67, 131, 231;
-        --primary-light     : #5590EC;
-        --primary-light-rgb : 85, 144, 236;
-
-        --body            : #ffffff;
-        --content         : #ffffff;
-        --content-light   : #ffffff;
-        --content-x-light : #F1F3FE;
-        --light           : #F1F3FE;
-        --x-light         : #F1F3FE;
-        --xx-light        : #ffffff;
-
-        --text           : #444244;
-        --text-secondary : #848284;
-        --text-tertiary  : rgb(207, 216, 220);
-        --title          : #2f1c6a;
-
-        --svg : #9a9fa7;
-
-        --light-border : #DCDEDD;
-
-        --input       : #ffffff;
-        --input-text  : #696969;
-        --input-track : #edeced;
-        --placeholder : #9a9fa7;
-    }
-
-    .dark {
         --primary           : #fbd566;
         --primary-rgb       : 251, 213, 102;
         --primary-light     : #FEDC78;
         --primary-light-rgb : 254, 220, 120;
         
-        --body            : #242b35;
-        --content         : #242b35;
-        --content-light   : #29313c;
-        --content-x-light : #2f3844;
-        --light           : #242b35;
-        --x-light         : #29313c;
-        --xx-light        : #2f3844;
+        /* --primary       : #38bdf8;
+        --primary-rgb   : 14, 165, 233;
+        --primary-light : #65CCF9;
+        --primary-dark  : #4c73f1; */
+
+        --body            : #191a1f;
+        --content         : #191a1f;
+        --content-light   : #232429;
+        --content-x-light : #32323a;
+        --light           : #191a1f;
+        --x-light         : #232429;
+        --xx-light        : #32323a;
+
+        --bar : #16161a;
 
         --text           : #fdfdfd;
         --text-secondary : #a5a9b2;
@@ -233,25 +188,11 @@ const variables = css`
 
         --light-border : #313842;
 
-        --input       : #2f3844;
+        --input       : #232429;
         --input-text  : #ffffff;
-        --input-track : #838ba0;
+        --input-track : #32323a;
         --placeholder : #a8b8d7;
     }
 `;
 
 export default variables;
-
-/* --primary           : #4383e7;
---primary-rgb       : 67, 131, 231;
---primary-light     : #5590EC;
---primary-light-rgb : 85, 144, 236; */
-
-/* --body            : #1d2238;
---content         : #1d2238;
---content-light   : #242A43;
---content-x-light : #272E49;
---light           : #1d2238;
---x-light         : #242A43;
---xx-light        : #272E49;
---input           : #1d2238; */
