@@ -1,33 +1,34 @@
 import React from 'react'
 import styled from 'styled-components'
 import Icon from './tools/icons/Icon'
-import { AlbumInterface } from './pages/Albums'
 import SongAlbum from './SongAlbum'
-import { CurrentSong } from '../types/types'
+import { CurrentSong, IAlbum } from '../types/types'
 
 interface Props {
-    album: AlbumInterface
+    album: IAlbum.Props
     setAlbum: React.Dispatch<React.SetStateAction<any>>
 }
 
 const AlbumSongs: React.FC<Props> = ({ album, setAlbum }) => {
     return (
         <ListContainer className={album.active ? 'vanish-right' : 'vanish-left'}>
-            <div className='album-list__title' onClick={() => setAlbum({ active: false, album: { title: '', artist: '', year: '', songs: [] } })}>
-                <Icon name="CaretLeft" />
-                <h2>{album.album.title || 'Albums inconnus'}</h2>
+            <div className='album-list__title' onClick={() => setAlbum((prev: IAlbum.Props) => ({ ...prev, active: false }))}>
+                <Icon name="DoubleArrowLeft" />
+                <h2>{album.title || 'Albums inconnus'}</h2>
             </div>
             <div className='album-list__container'>
-                {album.album.songs.map((music: CurrentSong.Props['song'], i: number) => {
-                    return (
-                        <SongAlbum
-                            key={i}
-                            album={album}
-                            music={music}
-                            uniqueKey={i}
-                        />
-                    )
-                })}
+                {album.active &&
+                    album.songs.length > 0 &&
+                    album.songs.map((music: CurrentSong.Props['song'], i: number) => {
+                        return (
+                            <SongAlbum
+                                key={i}
+                                album={album}
+                                music={music}
+                                uniqueKey={i}
+                            />
+                        )
+                    })}
             </div>
         </ListContainer>
     )
@@ -43,6 +44,7 @@ const ListContainer = styled.div`
     height     : 100vh;
     background : var(--content);
     transition : .3s ease;
+    z-index    : 1;
 
     .album-list__title {
         display     : flex;
@@ -54,9 +56,10 @@ const ListContainer = styled.div`
             height        : 36px;
             padding       : 5px;
             border-radius : var(--rounded-full);
+            background    : var(--content-light);
             cursor        : pointer;
             &:hover {
-                background : var(--content-light);
+                color : var(--primary);
             }
         }
 
