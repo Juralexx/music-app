@@ -20,8 +20,13 @@ const Player = () => {
     const [openVolume, setOpenVolume] = React.useState<boolean>(false)
     useClickOutside(volumeRef, () => setOpenVolume(false))
 
+    const picture = track.song.metadatas.common?.picture
+
     return (
         <PlayerContainer className={addActive(playerProps.open)}>
+            <div className="player__bg">
+                {picture ? <img src={picture} alt={track.song.title} className="player__bg" /> : <Logo />}
+            </div>
             <div className='player__top'>
                 <div className='player__top-left' onClick={() => setPlayerProps(prev => ({ ...prev, open: false }))}>
                     <Icon name="DoubleArrowLeft" />
@@ -30,15 +35,15 @@ const Player = () => {
             </div>
             <div className="player__card">
                 <div className='player__img'>
-                    {track.isPlaying ? <Logo /> : <Logo />}
-                    <AudioVisualizer isPlaying={track.isPlaying} />
+                    {picture ? <img src={picture} alt={track.song.title} /> : <Logo />}
+                    {/* <AudioVisualizer isPlaying={track.isPlaying} /> */}
                 </div>
                 <div className='player__title'>
                     <div className='player__title-song_name'>
                         {track?.song?.title}
                     </div>
                     <div className='player__title-song_artist'>
-                        {track?.song?.artist || 'Artiste inconnu'}
+                        {track?.song?.artist || 'Unknown artist'}
                     </div>
                 </div>
                 <div className='player__timestamp'>
@@ -127,6 +132,42 @@ const PlayerContainer = styled.div`
         transition : .3s ease;
     }
 
+    .player__bg {
+        position : absolute;
+        left     : 0;
+        top      : 0;
+        right    : 0;
+        width    : 100%;
+        height   : 60%;
+        opacity  : 0.5;
+        z-index  : -1;
+
+        img {
+            width      : 100%;
+            height     : 100%;
+            object-fit : cover;
+        }
+
+        svg {
+            width   : 100%;
+            height  : 100%;
+            color   : var(--primary);
+            opacity : 0.5;
+        }
+
+        &:after {
+            content    : '';
+            position   : absolute;
+            left       : 0;
+            bottom     : 0;
+            right      : 0;
+            width      : 100%;
+            height     : 100%;
+            background : linear-gradient(to top, var(--content), rgba(0, 0, 0, 0));
+            z-index    : 1;
+        }
+    }
+
     .player__top {
         position        : absolute;
         top             : 0;
@@ -181,12 +222,18 @@ const PlayerContainer = styled.div`
         justify-content : center;
         width           : 300px;
         height          : 300px;
-        padding         : 40px;
         color           : var(--primary);
         background      : var(--x-light);
         backdrop-filter : blur(5px);
         border-radius   : var(--rounded-2xl);
         margin          : 0 auto;
+
+        img {
+            width         : 100%;
+            height        : 100%;
+            object-fit    : cover;
+            border-radius : var(--rounded-2xl);
+        }
 
         svg {
             width  : 170px;
@@ -267,8 +314,8 @@ const PlayerContainer = styled.div`
             cursor           : pointer;
             svg {
                 position  : absolute;
-                top       : 50%;
-                left      : 50%;
+                top       : 51%;
+                left      : 51%;
                 transform : translate(-50%, -50%);
                 height    : 34px;
                 width     : 34px;

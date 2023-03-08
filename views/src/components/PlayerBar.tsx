@@ -28,7 +28,10 @@ const PlayerBar: React.FC = () => {
                             <Icon name='Play' className="player__icon-play" />
                         )}
                     </div>
-                    <div className="player__action-next" onClick={() => setTrack(prev => ({ ...prev, song: changeSong('forward', track) }))}>
+                    <div className="player__action-next" onClick={() => {
+                        console.log(changeSong('forward', track));
+                        setTrack(prev => ({ ...prev, song: changeSong('forward', track) }))
+                    }}>
                         <Icon name="Forward" />
                     </div>
                 </div>
@@ -36,8 +39,9 @@ const PlayerBar: React.FC = () => {
                     {!isLoading ? (
                         Object.keys(track.song).length > 0 &&
                         <div className='player__title' onClick={() => setPlayerProps(prev => ({ ...prev, open: true }))}>
-                            <p>{track.song.title}</p>
-                            <p>{track.song.artist || 'Artiste inconnu'}</p>
+                            <span className='player__title-title'>{track.song.title}</span>
+                            <span> - </span>
+                            <span className='player__title-artist'>{track.song.artist || 'Unknown artist'}</span>
                         </div>
                     ) : (
                         <div className='player__title'>
@@ -98,17 +102,12 @@ const PlayerBar: React.FC = () => {
 
 export default PlayerBar
 
-/**
- * 
- */
-
 const MusicPlayer = styled.div`
     position         : relative;
     width            : 100%;
     padding          : 35px 20px 15px;
-    background-color : var(--content-light);
-    box-shadow       : var(--shadow-top), var(--shadow-relief);
-    border-top       : 1px solid var(--light-border);
+    background-color : var(--bar);
+    box-shadow       : var(--shadow-dark), var(--shadow-relief);
 
     @media(max-width: 768px) {
         padding : 35px 10px 10px;
@@ -161,19 +160,23 @@ const MusicPlayer = styled.div`
             cursor           : pointer;
             svg {
                 position  : absolute;
-                top       : 50%;
-                left      : 50%;
+                top       : 50.5%;
+                left      : 50.5%;
                 transform : translate(-50%, -50%);
                 height    : 24px;
                 width     : 24px;
             }
             .player__icon-play {
                 left   : 54%;
-                height : 22px;
-                width  : 22px;
+                height : 21px;
+                width  : 21px;
             }
             &:hover {
                 background-color : var(--primary-light);
+            }
+            @media(max-width: 576px) {
+                height : 38px;
+                width  : 38px;
             }
         }
     }
@@ -187,7 +190,6 @@ const MusicPlayer = styled.div`
             align-items      : center;
             height           : 100%;
             width            : 130px;
-            /* background-color : var(--content-light); */
             cursor           : pointer;
             svg {
                 margin-right : 10px;
@@ -218,25 +220,24 @@ const MusicPlayer = styled.div`
     .player__title {
         position : absolute;
         left     : 90px;
-        top      : -35px;
+        top      : -25px;
         cursor   : pointer;
-        p {
-            max-width          : 350px;
+
+        @media(min-width:577px) {
+            max-width          : 450px;
             line-height        : 16px;
             text-overflow      : ellipsis;
             overflow           : hidden;
             display            : -webkit-box;
             -webkit-line-clamp : 1;
             -webkit-box-orient : vertical;
-
-            &:first-child {
-                font-weight : 500;
-            }
-            &:last-child {
-                font-size   : 12px;
-                color       : var(--text-secondary);
-                font-weight : 300;
-            }
+            font-weight        : 500;
+        }
+        span:nth-child(2),
+        .player__title-artist {
+            font-size   : 14px;
+            color       : var(--text-secondary);
+            font-weight : 300;
         }
         @media(max-width: 992px) {
             left : 70px;
@@ -246,6 +247,21 @@ const MusicPlayer = styled.div`
             top        : -16px;
             max-width  : 380px;
             max-height : 30px;
+            .player__title-title,
+            .player__title-artist {
+                line-height        : 16px;
+                text-overflow      : ellipsis;
+                overflow           : hidden;
+                display            : -webkit-box;
+                -webkit-line-clamp : 1;
+                -webkit-box-orient : vertical;
+            }
+            span {
+                display : block;
+                &:nth-child(2) {
+                    display : none;
+                }
+            }
         }
     }
 
@@ -256,7 +272,6 @@ const MusicPlayer = styled.div`
         height           : 100%;
         width            : 100%;
         padding          : 0 40px;
-        /* background-color : var(--content-light); */
 
         .timestamp {
             font-size   : 12px;
@@ -275,9 +290,15 @@ const MusicPlayer = styled.div`
             margin-top : 4px;
         }
         @media(max-width: 576px) {
-            .timestamp,
-            input {
+            .timestamp {
                 display : none;
+            }
+            input {
+                position : fixed;
+                bottom   : 62px;
+                width    : 100%;
+                left     : 0;
+                right    : 0;
             }
         }
     }
