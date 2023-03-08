@@ -14,6 +14,8 @@ const SongActive: React.FC = () => {
 
     const { timeRange } = usePlayer(player)
 
+    const { album, artist } = track.song.metadatas.common
+
     return (
         <SongItem className={`music__item active`}
             onClick={() => {
@@ -32,9 +34,9 @@ const SongActive: React.FC = () => {
                         {track.song.title}
                     </div>
                     <div className='music__item-artist'>
-                        <span>{track.song.metadatas.common.artist ? track.song.metadatas.common.artist : 'Artiste inconnu'}</span>
-                        <span>{track.song.metadatas.common.artist && track.song.metadatas.common.album && '|'}</span>
-                        <span>{track.song.metadatas?.common?.album}</span>
+                        <span>{artist ? artist : 'Unknown artist'}</span>
+                        <span>{artist && album && '|'}</span>
+                        <span>{album}</span>
                     </div>
                 </div>
             </div>
@@ -50,7 +52,7 @@ const SongActive: React.FC = () => {
     )
 }
 
-export default SongActive
+export default React.memo(SongActive)
 
 const SongItem = styled.div`
     position        : relative;
@@ -111,7 +113,6 @@ const SongItem = styled.div`
             transform : translate(-50%, -50%);
             height    : 24px;
             width     : 24px;
-            z-index   : 1;
         }
         .music__item-play {
             left  : 54%;
@@ -121,7 +122,6 @@ const SongItem = styled.div`
             position  : relative;
             fill      : var(--x-light);
             transform : rotate(-90deg);
-            z-index   : 0;
             circle {
                 stroke            : var(--primary);
                 stroke-width      : 4;
