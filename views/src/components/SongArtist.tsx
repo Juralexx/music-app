@@ -18,14 +18,14 @@ const SongArtist: React.FC<Props> = ({ artist, music, uniqueKey }) => {
     const { player } = React.useContext(PlayerContext)
     const { timeRange } = usePlayer(player)
 
-    const context = { name: 'artist', artist: artist.artist.name, songs: artist.artist.songs }
+    const context = { name: 'artist', artist: artist.name, songs: artist.songs }
 
     return (
         <ArtistSongItem className={addActive(track.song._id === music._id)}
             tabIndex={uniqueKey}
             onClick={() => {
                 onMusicClick(track, setTrack, music, player, context)
-                localStorage.setItem('musicContext', JSON.stringify({ name: 'artist', artist: artist.artist.name }))
+                localStorage.setItem('musicContext', JSON.stringify({ name: 'artist', artist: artist.name }))
             }}
         >
             <div className='album-list__item-left'>
@@ -46,7 +46,7 @@ const SongArtist: React.FC<Props> = ({ artist, music, uniqueKey }) => {
                         {music.title}
                     </div>
                     <div className='album-list__item-artist'>
-                        <span>{music.metadatas.common.artist ? music.metadatas.common.artist : 'Artiste inconnu'}</span>
+                        <span>{music.metadatas.common.artist ? music.metadatas.common.artist : 'Unknown artist'}</span>
                         <span>{music.metadatas.common.artist && music.metadatas.common.album && '|'}</span>
                         <span>{music.metadatas.common?.album}</span>
                     </div>
