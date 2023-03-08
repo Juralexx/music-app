@@ -1,38 +1,41 @@
 import React from 'react'
 import styled from 'styled-components'
-import { MusicsContext, PlayerContext, TrackContext } from '../AppContext'
+import { PlayerContext, TrackContext } from '../AppContext'
 import { onMusicClick } from './functions/functions'
 import Icon from './tools/icons/Icon'
 import { timeFormat } from './tools/Utils'
 
 interface Props {
-    music: { [key: string]: any }
+    music: { [key: string]: any },
+    context: Record<string, any>,
+    contextSongs: Array<any>
 }
 
-const Song: React.FC<Props> = ({ music }) => {
-    const { musics } = React.useContext(MusicsContext)
+const Song: React.FC<Props> = ({ music, context, contextSongs }) => {
     const { track, setTrack } = React.useContext(TrackContext)
     const { player } = React.useContext(PlayerContext)
+
+    const { picture, album, artist } = music.metadatas.common
 
     return (
         <SongItem className='music__item'
             onClick={() => {
-                onMusicClick(track, setTrack, music, player, musics.all)
-                localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
+                onMusicClick(track, setTrack, music, player, contextSongs)
+                localStorage.setItem('musicContext', JSON.stringify(context))
             }}
         >
             <div className='music__item-left'>
                 <div className='music__item-icon'>
-                    <Icon name="MusicFile" className='music__item-note' />
+                    {picture ? <img src={picture} alt={music.title} /> : <Icon name="MusicFile" className='music__item-note' />}
                 </div>
                 <div className='music__item-infos'>
                     <div className='music__item-title'>
                         {music.title}
                     </div>
                     <div className='music__item-artist'>
-                        <span>{music.metadatas.common.artist ? music.metadatas.common.artist : 'Artiste inconnu'}</span>
-                        <span>{music.metadatas.common.artist && music.metadatas.common.album && '|'}</span>
-                        <span>{music.metadatas?.common?.album}</span>
+                        <span>{artist ? artist : 'Unknown artist'}</span>
+                        <span>{artist && album && '|'}</span>
+                        <span>{album}</span>
                     </div>
                 </div>
             </div>
@@ -50,6 +53,7 @@ const SongItem = styled.div`
     display         : flex;
     align-items     : center;
     justify-content : space-between;
+    flex-grow       : 1;
     padding         : 10px 0;
     border-radius   : var(--rounded-md);
     cursor          : pointer;
@@ -80,10 +84,19 @@ const SongItem = styled.div`
     .music__item-icon {
         position         : relative;
         border-radius    : var(--rounded-md);
+        height           : 50px;
         min-height       : 50px;
+        width            : 50px;
         min-width        : 50px;
         color            : var(--svg);
         background-color : var(--x-light);
+
+        img {
+            width         : 100%;
+            height        : 100%;
+            object-fit    : cover;
+            border-radius : var(--rounded-md);
+        }
 
         .music__item-note {
             position  : absolute;
@@ -92,7 +105,6 @@ const SongItem = styled.div`
             transform : translate(-50%, -50%);
             height    : 24px;
             width     : 24px;
-            z-index   : 1;
         }
     }
 
