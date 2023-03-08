@@ -36,6 +36,26 @@ export namespace Musics {
  * 
  */
 
+export namespace Song {
+    export interface Props {
+        _id: string,
+        url: string,
+        title: string,
+        metadatas: {
+            common: {
+                [key: string]: any
+            }
+            format: {
+                [key: string]: any
+            }
+        }
+    }
+}
+
+/**
+ * 
+ */
+
 export namespace CurrentSong {
     export interface Props {
         isPlaying: boolean,
@@ -91,10 +111,8 @@ export namespace AudioPlayer {
 export namespace IArtist {
     export interface Props {
         active: boolean,
-        artist: {
-            name: string,
-            songs: any[]
-        }
+        name: string,
+        songs: Array<Song.Props>
     }
 }
 
@@ -105,12 +123,24 @@ export namespace IArtist {
 export namespace IAlbum {
     export interface Props {
         active: boolean,
-        album: {
-            title: string,
-            artist: string,
-            year: string,
-            songs: object[]
-        }
+        title: string,
+        artist: string,
+        year: string,
+        songs: any[]
+    }
+}
+
+/**
+ * 
+ */
+
+export namespace IPlaylist {
+    export interface Props {
+        active?: boolean,
+        undeletable?: boolean,
+        _id: string,
+        name: string,
+        songs: Array<Song.Props>
     }
 }
 
