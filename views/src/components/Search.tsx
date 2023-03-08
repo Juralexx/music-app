@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { MusicsContext, TrackContext } from '../AppContext'
-import { AlbumInterface } from './pages/Albums'
-import { ArtistInterface } from './pages/Artists'
 import AlbumSongs from './AlbumSongs'
 import ArtistSongs from './ArtistSongs'
 import Song from './Song'
@@ -13,40 +11,18 @@ import Icon from './tools/icons/Icon'
 import { IconInput } from './tools/Inputs'
 import { addActive, removeAccents } from './tools/Utils'
 import { Logo } from './tools/Logo'
-
-export interface SearchProps {
-    state: boolean,
-    query: string,
-    type: string,
-    results: any,
-    songsResults: any,
-    albumsResults: any,
-    artistsResults: any,
-    filteredResults: any,
-}
-
-const defaultSearchProps: SearchProps = {
-    state: false,
-    query: '',
-    type: 'all',
-    results: [],
-    songsResults: [],
-    albumsResults: [],
-    artistsResults: [],
-    filteredResults: [],
-}
+import { IAlbum, IArtist, SearchProps } from '../types/types'
 
 interface Props {
     isSearching: boolean,
-    setSearching: React.Dispatch<React.SetStateAction<any>>
+    setSearching: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
     const { musics } = React.useContext(MusicsContext)
     const { track } = React.useContext(TrackContext)
 
-    const searchResultsRefs = React.useRef([])
-    const [search, setSearch] = React.useState<SearchProps>(defaultSearchProps)
+    const [search, setSearch] = React.useState<SearchProps.Props>(SearchProps.defaultProps)
 
     const artists = Object.entries(musics.artists).map(([key, value]) => ({ type: 'artist', name: key, songs: value }))
     const albums = Object.entries(musics.albums).map(([_, value]) => ({ type: 'album', ...value })).filter(e => e.title !== undefined)
@@ -91,13 +67,13 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
         let regex = new RegExp(query, 'i');
 
         for (let i = 0; i < musicsTitles.length; i++) {
-            musicsTitles[i].innerHTML = (musicsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
+            musicsTitles[i].innerHTML = (musicsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="highlight">${match}</span>`);
         }
         for (let i = 0; i < albumsTitles.length; i++) {
-            albumsTitles[i].innerHTML = (albumsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
+            albumsTitles[i].innerHTML = (albumsTitles[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="highlight">${match}</span>`);
         }
         for (let i = 0; i < artistName.length; i++) {
-            artistName[i].innerHTML = (artistName[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="hightlight">${match}</span>`);
+            artistName[i].innerHTML = (artistName[i] as HTMLElement).innerText.replace(regex, (match: any) => `<span class="highlight">${match}</span>`);
         }
     }
 
@@ -105,16 +81,16 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
      * 
      */
 
-    const [album, setAlbum] = React.useState<AlbumInterface>({ active: false, album: albums[0] })
-    const [artist, setArtist] = React.useState<ArtistInterface>({ active: false, artist: musics.artists[0] })
+    const [album, setAlbum] = React.useState<IAlbum.Props>({ active: false, ...albums[0] })
+    const [artist, setArtist] = React.useState<IArtist.Props>({ active: false, ...artists[0] })
 
     return (
         <SearchContainer className={isSearching ? 'vanish-right' : 'vanish-left'}>
             <div className='search__container-top'>
-                <Icon name="CaretLeft" onClick={() => setSearching(false)} />
+                <Icon name="DoubleArrowLeft" onClick={() => setSearching(false)} />
                 <IconInput
                     type="text"
-                    placeholder="Rechercher..."
+                    placeholder="Search..."
                     className="is_end_icon"
                     endIcon={<Icon name="Search" />}
                     value={search.query}
@@ -152,7 +128,11 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                             <div key={i}>
                                 {!element.type && (
                                     track.song._id !== element._id ? (
-                                        <Song music={element} />
+                                        <Song
+                                            music={element}
+                                            context={{ name: "all" }}
+                                            contextSongs={musics.all}
+                                        />
                                     ) : (
                                         <SongActive />
                                     ))
@@ -160,13 +140,13 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                                 {element.type === 'album' &&
                                     <Album
                                         album={element}
-                                        onClick={() => setAlbum({ active: true, album: element })}
+                                        onClick={() => setAlbum({ ...element, active: true })}
                                     />
                                 }
                                 {element.type === 'artist' &&
                                     <Artist
                                         artist={element}
-                                        onClick={() => setArtist({ active: true, artist: element })}
+                                        onClick={() => setArtist({ ...element, active: true })}
                                     />
                                 }
                             </div>
@@ -178,17 +158,17 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                 <div className='search__results-full'>
                     <div className='search__results-empty'>
                         <Logo />
-                        <p>Rien à afficher...</p>
+                        <p>Nothing to show...</p>
                     </div>
                 </div>
             }
-            {album?.album !== undefined &&
+            {isSearching &&
                 <AlbumSongs
                     album={album}
                     setAlbum={setAlbum}
                 />
             }
-            {artist.artist !== undefined &&
+            {isSearching &&
                 <ArtistSongs
                     artist={artist}
                     setArtist={setArtist}
@@ -266,7 +246,7 @@ const SearchContainer = styled.div`
         }
     }
 
-    .hightlight {
+    .highlight {
         color       : var(--primary);
         font-weight : 600;
     }
