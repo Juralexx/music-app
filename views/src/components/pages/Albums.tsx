@@ -5,16 +5,7 @@ import AlbumSongs from '../AlbumSongs'
 import Album from '../Album'
 import { LoadingContext, MusicsContext } from '../../AppContext'
 import { sortByAlphabetical } from '../tools/Utils'
-
-export interface AlbumInterface {
-    active: boolean,
-    album: {
-        title: string,
-        artist: string,
-        year: string,
-        songs: object[]
-    }
-}
+import { IAlbum } from '../../types/types'
 
 const Albums: React.FC = () => {
     const { musics } = React.useContext(MusicsContext)
@@ -24,19 +15,19 @@ const Albums: React.FC = () => {
     const undefineds = Object.values(musics.albums).filter(e => e.title === undefined)
     const albums = sorted.concat(undefineds)
 
-    const [album, setAlbum] = React.useState<AlbumInterface>({ active: false, album: albums[0] })
+    const [album, setAlbum] = React.useState<IAlbum.Props>({ active: false, ...albums[0] })
 
     return (
         <ListContainer>
             <h2>Albums <span>{Object.keys(musics.albums).length}</span></h2>
             <div className='list__container'>
                 {!isLoading ? (
-                    albums.map((album: AlbumInterface["album"], i: number) => {
+                    albums.map((album: IAlbum.Props, i: number) => {
                         return (
                             <Album
                                 key={i}
                                 album={album}
-                                onClick={() => setAlbum({ active: true, album: album })}
+                                onClick={() => setAlbum({ ...album, active: true })}
                             />
                         )
                     })
@@ -56,12 +47,10 @@ const Albums: React.FC = () => {
                     })
                 )}
             </div>
-            {album?.album !== undefined &&
-                <AlbumSongs
-                    album={album}
-                    setAlbum={setAlbum}
-                />
-            }
+            <AlbumSongs
+                album={album}
+                setAlbum={setAlbum}
+            />
         </ListContainer>
     )
 }
@@ -92,8 +81,8 @@ const ListContainer = styled.div`
     @media (max-width: 992px) {
         padding : 15px 0 0;
         h2 {
-            padding       : 0 15px 5px;
-            font-size     : 20px;
+            padding   : 0 15px 5px;
+            font-size : 20px;
             span {
                 font-size : 14px;
             }
@@ -101,11 +90,11 @@ const ListContainer = styled.div`
     }
 
     .list__container {
-        position       : relative;
-        height         : calc(100% - 50px);
-        width          : 100%;
-        padding        : 0 25px 50px;
-        overflow-y     : auto;
+        position   : relative;
+        height     : calc(100% - 50px);
+        width      : 100%;
+        padding    : 0 25px 50px;
+        overflow-y : auto;
 
         @media (max-width: 992px) {
             height  : calc(100% - 35px);
