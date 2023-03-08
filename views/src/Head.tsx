@@ -7,7 +7,7 @@ const Head = () => {
         site_name: 'Music App',
         title: 'Music App - A small music app built using React, Typescript and Express',
         description: 'A small music app built using React, Typescript and Express.',
-        image: `${process.env.REACT_APP_SERVER_URL}/files/img/logo.png`,
+        image: `${process.env.REACT_APP_URL}/img/logo.png`,
         url: `${process.env.REACT_APP_URL}${pathname}`
     }
 
