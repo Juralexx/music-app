@@ -3,102 +3,119 @@ import axios from 'axios';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
+import { CurrentSong, Musics, AudioPlayer } from './types/types';
 import { MusicsContext, PlayerContext, TrackContext, LoadingContext, PlayerPropsContext } from './AppContext'
-import { convertObjToArr, sortByAlphabetical, randomItem } from './components/tools/Utils';
-import { groupeByAlbums, groupeByAlphabeticalOrder, groupeByArtists } from './components/tools/functions';
+import usePlaylists from './components/functions/usePlaylists';
 import Sidebar from './components/Sidebar';
 import Search from './components/Search';
 import Songs from './components/pages/Songs';
 import Albums from './components/pages/Albums';
 import Artists from './components/pages/Artists';
+import Playlists from './components/pages/Playlists';
 import PlayerBar from './components/PlayerBar';
 import Player from './components/Player';
 import Home from './components/pages/Home';
 import { IconInput } from './components/tools/Inputs';
 import Icon from './components/tools/icons/Icon';
 import { AnimatedLogo } from './components/tools/Logo';
-import { CurrentSong, Musics, AudioPlayer } from './types/types';
+import { convertObjToArr, sortByAlphabetical, randomItem } from './components/tools/Utils';
+import { groupeByAlbums, groupeByAlphabeticalOrder, groupeByArtists } from './components/functions/functions';
 
 const App: React.FC = () => {
     const [musics, setMusics] = React.useState<Musics.Props>(Musics.defaultProps)
+    const { playlists, setPlaylists } = usePlaylists()
     const [track, setTrack] = React.useState<CurrentSong.Props>(CurrentSong.defaultProps)
     const [isLoading, setLoading] = React.useState<boolean>(true)
 
     React.useEffect(() => {
         if (musics.all.length === 0) {
-            const fetchMusics = async () => {
-                await axios({
-                    method: 'GET',
-                    url: `${process.env.REACT_APP_API_URL}/datas`,
-                    headers: {
-                        'Authorization': process.env.REACT_APP_ACCESS_TOKEN
-                    }
-                })
-                    .then(res => {
-                        const all = sortByAlphabetical(res.data, 'title')
-                        const sorted = groupeByAlphabeticalOrder(res.data, 'title')
-                        const artists = groupeByArtists(res.data)
-                        const albums = groupeByAlbums(res.data)
-
-                        setMusics({
-                            all: all,
-                            sorted: sorted,
-                            artists: artists,
-                            albums: albums
-                        })
-
-                        const musicStorage = JSON.parse(localStorage.getItem('music') || '{}')
-                        const contextStorage = JSON.parse(localStorage.getItem('musicContext') || '{}')
-
-                        if (musicStorage?.title)
-                            setTrack(prev => ({ ...prev, song: musicStorage }))
-                        else setTrack(prev => ({ ...prev, song: res.data[0] }))
-
-                        if (Object.keys(contextStorage).length > 0) {
-                            if (contextStorage.name === 'all') {
-                                setTrack(prev => ({
-                                    ...prev,
-                                    context: Object.assign(contextStorage, { songs: res.data })
-                                }))
-                            } else if (contextStorage.name === 'artist') {
-                                setTrack(prev => ({
-                                    ...prev,
-                                    context: Object.assign(contextStorage, { songs: artists[contextStorage.artist].songs })
-                                }))
-                            } else if (contextStorage.name === 'album') {
-                                const albumsArr = convertObjToArr(albums)
-                                const albumArr = albumsArr.find(el => el.title === contextStorage.album && el.artist === contextStorage.artist)
-                                setTrack(prev => ({
-                                    ...prev,
-                                    context: Object.assign(contextStorage, { songs: albumArr.songs })
-                                }))
-                            }
-                        } else {
-                            setTrack(prev => ({ ...prev, context: { name: 'all', songs: res.data } }))
-                            localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
+            if (playlists.length > 0) {
+                const fetchMusics = async () => {
+                    await axios({
+                        method: 'GET',
+                        url: `${process.env.REACT_APP_API_URL}/datas`,
+                        headers: {
+                            'Authorization': process.env.REACT_APP_ACCESS_TOKEN
                         }
-
-                        const timer = setTimeout(() => setLoading(false), 1000)
-                        return () => clearTimeout(timer)
                     })
-                    .catch(err => console.log(err))
+                        .then(res => {
+                            const all = sortByAlphabetical(res.data, 'title')
+                            const sorted = groupeByAlphabeticalOrder(res.data, 'title')
+                            const artists = groupeByArtists(res.data)
+                            const albums = groupeByAlbums(res.data)
+
+                            setMusics({ all: all, sorted: sorted, artists: artists, albums: albums })
+
+                            const musicStorage = JSON.parse(localStorage.getItem('music') || '{}')
+                            const contextStorage = JSON.parse(localStorage.getItem('musicContext') || '{}')
+
+                            if (musicStorage?.title)
+                                setTrack(prev => ({ ...prev, song: musicStorage }))
+                            else setTrack(prev => ({ ...prev, song: res.data[0] }))
+
+                            if (Object.keys(contextStorage).length > 0) {
+                                if (contextStorage.name === 'all') {
+                                    setTrack(prev => ({ ...prev, context: Object.assign(contextStorage, { songs: res.data }) }))
+                                }
+                                else if (contextStorage.name === 'artist') {
+                                    setTrack(prev => ({ ...prev, context: Object.assign(contextStorage, { songs: artists[contextStorage.artist].songs }) }))
+                                }
+                                else if (contextStorage.name === 'album') {
+                                    const albumsArr = convertObjToArr(albums)
+                                    const albumArr = albumsArr.find(el => el.title === contextStorage.album && el.artist === contextStorage.artist)
+                                    setTrack(prev => ({ ...prev, context: Object.assign(contextStorage, { songs: albumArr.songs }) }))
+                                }
+                                else if (contextStorage.name === 'playlist') {
+                                    const playlist = playlists.find(el => el._id === contextStorage._id)
+                                    if (playlist) {
+                                        setTrack(prev => ({ ...prev, context: Object.assign(contextStorage, { songs: playlist.songs }) }))
+                                    } else {
+                                        localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
+                                        setTrack(prev => ({ ...prev, context: { name: 'all', songs: musics.all } }))
+                                    }
+                                }
+                            } else {
+                                setTrack(prev => ({ ...prev, context: { name: 'all', songs: res.data } }))
+                                localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
+                            }
+
+                            const timer = setTimeout(() => setLoading(false), 1000)
+                            return () => clearTimeout(timer)
+                        })
+                        .catch(err => console.log(err))
+                }
+                fetchMusics()
             }
-            fetchMusics()
         }
-    }, [musics])
+    }, [musics, playlists])
 
     /**
      * 
      */
 
-    const player = React.useRef(new Audio(`${process.env.REACT_APP_API_URL}${track.song.url}`)) as React.RefObject<HTMLMediaElement>
+    const player = React.useRef(new Audio(`${process.env.REACT_APP_API_URL}${track.song.url}`)) as React.MutableRefObject<HTMLMediaElement>
+    const [audioContext, setAudioContext] = React.useState<AudioContext>()
+    const [source, setSource] = React.useState<MediaElementAudioSourceNode>()
+
+    React.useEffect(() => {
+        if (track.isPlaying) {
+            if (player.current) {
+                if (source === undefined) {
+                    const context = new (window.AudioContext || (window as any).webkitAudioContext)()
+                    setAudioContext(context)
+                    setSource(context.createMediaElementSource(player.current!))
+                    context.resume()
+                }
+            }
+        }
+    }, [track.isPlaying])
 
     const [playerProps, setPlayerProps] = React.useState<AudioPlayer.Props>(AudioPlayer.defaultProps)
 
     React.useEffect(() => {
         if (player.current !== null) {
             player.current.crossOrigin = "anonymous"
-            player.current.src = `${process.env.REACT_APP_API_URL}${track.song.url}`
+            player.current.src = `${track.song.url}`
             player.current.load()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,28 +125,22 @@ const App: React.FC = () => {
      * 
      */
 
+    //To do :
+    // gerer l'historique lors du retour en arriere
+
     React.useEffect(() => {
         if (player.current !== null) {
-            player.current?.addEventListener('loadeddata', () => {
+            player.current.addEventListener('canplay', () => {
                 if (track.isPlaying) {
                     player.current!.play()
-                } else {
-                    player.current!.pause()
-                }
-                if (Object.keys(track.song).length > 0) {
-                    localStorage.setItem('music', JSON.stringify({
-                        ...track.song,
-                        currentTime: 0,
-                        remainingTime: track.song?.metadatas?.format?.duration
-                    }))
                 }
             })
 
             const automaticMusicChange = () => {
                 if (playerProps.mode === 'repeatOne') {
                     if (track.song.url) {
-                        player.current!.src = `${process.env.REACT_APP_API_URL}${track.song.url}`
-                        player.current!.load()
+                        player.current!.currentTime = 0
+                        player.current!.play()
                     }
                 } else if (playerProps.mode === 'repeat') {
                     const array = track.context.songs || []
@@ -179,25 +190,21 @@ const App: React.FC = () => {
 
     const [isSearching, setSearching] = React.useState<boolean>(false)
 
-    /**
-     * 
-     */
-
     return (
         <RootContainer>
             <GlobalStyles />
             <BrowserRouter>
-                <Sidebar />
-                <MusicsContext.Provider value={{ musics, setMusics }} >
+                <MusicsContext.Provider value={{ musics, setMusics, playlists, setPlaylists }} >
                     <LoadingContext.Provider value={{ isLoading, setLoading }} >
                         <TrackContext.Provider value={{ track, setTrack }} >
-                            <PlayerContext.Provider value={{ player: player?.current }} >
+                            <PlayerContext.Provider value={{ player: player?.current, audioContext, source }} >
+                                <Sidebar />
                                 <RootInner>
                                     <SearchContainer>
                                         <IconInput
                                             type="text"
                                             readOnly
-                                            placeholder="Rechercher..."
+                                            placeholder="Search..."
                                             className="is_end_icon"
                                             endIcon={<Icon name="Search" />}
                                             onClick={() => setSearching(true)}
@@ -212,6 +219,7 @@ const App: React.FC = () => {
                                         <Route path="/songs" element={<Songs />} />
                                         <Route path="/artists" element={<Artists />} />
                                         <Route path="/albums" element={<Albums />} />
+                                        <Route path="/playlists" element={<Playlists />} />
                                         <Route path="*" element={<Navigate to="/" />} />
                                     </Routes>
                                     <PlayerPropsContext.Provider value={{ playerProps, setPlayerProps }}>
@@ -258,7 +266,7 @@ const RootContainer = styled.div`
         width           : 100vw;
         height          : 100vh;
         background      : linear-gradient(to bottom, var(--content), var(--content-x-light));
-        z-index         : 100;
+        z-index         : 1000;
         svg {
             width : 200px;
             color : var(--primary);
