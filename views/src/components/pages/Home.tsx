@@ -6,15 +6,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Keyboard, Navigation, Mousewheel } from "swiper";
 import "swiper/css/navigation";
 import 'swiper/css';
+import { LoadingContext, MusicsContext, TrackContext } from '../../AppContext';
+import { IAlbum, IArtist } from '../../types/types';
 import Icon from '../tools/icons/Icon';
 import AlbumSongs from '../AlbumSongs';
 import ArtistSongs from '../ArtistSongs';
 import SongActive from '../SongActive';
 import Song from '../Song';
 import Artist from '../Artist';
-import { AlbumInterface } from './Albums'
-import { ArtistInterface } from './Artists';
-import { LoadingContext, MusicsContext, TrackContext } from '../../AppContext';
 import { shuffleArray } from '../tools/Utils';
 
 const Home: React.FC = () => {
@@ -24,32 +23,38 @@ const Home: React.FC = () => {
 
     const swiperRef = React.useRef<SwiperType>()
 
-    const albums = React.useMemo(() => { return shuffleArray(Object.values(musics.albums)).slice(0, 20) }, [musics])
+    const albums = React.useMemo(() => {
+        let albumsWithPicture: any[] = []
+        Object.values(musics.albums).forEach(el => { if (el.songs[0].metadatas.common.picture) return albumsWithPicture = [...albumsWithPicture, el] })
+        return shuffleArray(albumsWithPicture).slice(0, 20)
+    }, [musics])
     const artists = React.useMemo(() => { return shuffleArray(Object.entries(musics.artists)).slice(0, 20) }, [musics])
     const songs = React.useMemo(() => { return shuffleArray(musics.all).slice(0, 20) }, [musics])
 
-    const [album, setAlbum] = React.useState<AlbumInterface>({ active: false, album: albums[0] })
-    const [artist, setArtist] = React.useState<ArtistInterface>({ active: false, artist: musics.artists[0] })
+    const [album, setAlbum] = React.useState<IAlbum.Props>({ active: false, ...albums[0] })
+    const [artist, setArtist] = React.useState<IArtist.Props>({ active: false, ...artists[0] })
+
+    const { common } = track.song.metadatas
 
     return (
         <HomeContainer>
             <div className='currently__playing'>
                 <div className='currently__playing-before'>
-                    Actuellement
+                    Now
                 </div>
                 <div className='currently__playing-title'>
                     {track.song.title}
-                    <span>{track.song.metadatas?.common?.artist ? track.song.metadatas.common.artist : 'Artiste inconnu'}</span>
-                    {track.song.metadatas?.common?.artist && track.song.metadatas.common.album &&
+                    <span>{common?.artist ? common.artist : 'Unknown artist'}</span>
+                    {common?.artist && common.album &&
                         <span>|</span>
                     }
-                    {track.song.metadatas?.common?.album &&
-                        <span>{track.song.metadatas?.common?.album}</span>
+                    {common?.album &&
+                        <span>{common?.album}</span>
                     }
                 </div>
             </div>
             <div className='swiper__top'>
-                <Link to="/albums">Voir tous</Link>
+                <Link to="/albums">View all</Link>
                 <div className="swiper__buttons">
                     <div className="swiper__button previous" onClick={() => swiperRef.current?.slidePrev()}>
                         <Icon name="DoubleArrowLeft" />
@@ -69,19 +74,20 @@ const Home: React.FC = () => {
                 spaceBetween={20}
             >
                 {!isLoading ? (
-                    albums.map((album: AlbumInterface["album"], key: number) => {
+                    albums.map((album: IAlbum.Props, key: number) => {
+                        const { picture } = album.songs[0].metadatas.common
                         return (
-                            <SwiperSlide key={key} className="swiper__slide" tabIndex={key} onClick={() => setAlbum({ active: true, album: album })}>
+                            <SwiperSlide key={key} className="swiper__slide" tabIndex={key} onClick={() => setAlbum({ ...album, active: true })}>
                                 <AlbumCard>
                                     <div className='album__card-image'>
-                                        <Icon name="CD" />
+                                        {picture ? <img src={picture} alt={album.title} /> : <Icon name="CD" />}
                                     </div>
                                     <div className='album__card-infos'>
                                         <div className='album__card-title'>
                                             {album.title || 'Albums inconnus'}
                                         </div>
                                         <div className='album__card-artist'>
-                                            <span>{album.artist || 'Artiste inconnu'}</span>
+                                            <span>{album.artist || 'Unknown artist'}</span>
                                             {album.artist && album.year && <span>|</span>}
                                             {album.year && <span>{album.year}</span>}
                                         </div>
@@ -110,12 +116,17 @@ const Home: React.FC = () => {
             </Swiper>
             <HomeBottom>
                 <SongsContainer>
-                    <h3>Recommandations</h3>
+                    <h3>Recommendations</h3>
                     <div className="list__container-inner">
                         {songs.map((music: { [key: string]: any }, i: number) => {
                             return (
                                 track.song._id !== music._id ? (
-                                    <Song key={i} music={music} />
+                                    <Song
+                                        key={i}
+                                        music={music}
+                                        context={{ name: 'all' }}
+                                        contextSongs={musics.all}
+                                    />
                                 ) : (
                                     <SongActive key={i} />
                                 )
@@ -124,7 +135,7 @@ const Home: React.FC = () => {
                     </div>
                 </SongsContainer>
                 <ArtistsContainer>
-                    <h3>Artistes</h3>
+                    <h3>Artists</h3>
                     <div className='list__container-inner'>
                         {artists.map((artist: any, j: number) => {
                             const name = artist[0]
@@ -133,25 +144,21 @@ const Home: React.FC = () => {
                                 <Artist
                                     key={j}
                                     artist={{ name: name, songs: songs }}
-                                    onClick={() => setArtist({ active: true, artist: { name: name, songs: songs } })}
+                                    onClick={() => setArtist({ active: true, name: name, songs: songs })}
                                 />
                             )
                         })}
                     </div>
                 </ArtistsContainer>
             </HomeBottom>
-            {album?.album !== undefined &&
-                <AlbumSongs
-                    album={album}
-                    setAlbum={setAlbum}
-                />
-            }
-            {artist.artist !== undefined &&
-                <ArtistSongs
-                    artist={artist}
-                    setArtist={setArtist}
-                />
-            }
+            <AlbumSongs
+                album={album}
+                setAlbum={setAlbum}
+            />
+            <ArtistSongs
+                artist={artist}
+                setArtist={setArtist}
+            />
         </HomeContainer>
     )
 }
@@ -179,8 +186,14 @@ const HomeContainer = styled.div`
     }
 
     .currently__playing-title {
-        font-size   : 24px;
-        font-weight : 600;
+        font-size          : 24px;
+        font-weight        : 600;
+        text-overflow      : ellipsis;
+        overflow           : hidden;
+        width              : 100%;
+        display            : -webkit-box;
+        -webkit-line-clamp : 1;
+        -webkit-box-orient : vertical;
         span {
             font-size : 16px;
             color     : var(--text-secondary);
@@ -191,12 +204,17 @@ const HomeContainer = styled.div`
                 margin : 0 5px;
             }
         }
+
+        @media(max-width: 768px) {
+            font-size : 18px;
+        }
     }
 
     .swiper {
         width        : 100%;
         height       : auto;
         padding-left : 25px;
+        z-index      : unset;
 
         @media(max-width: 992px) {
             padding-left : 15px;
@@ -265,6 +283,13 @@ const AlbumCard = styled.div`
         background-color : var(--content-light);
         border-radius    : var(--rounded-md);
         box-shadow       : var(--shadow-tiny);
+
+        img {
+            width         : 100%;
+            height        : 100%;
+            object-fit    : cover;
+            border-radius : var(--rounded-md);
+        }
 
         svg {
             width   : 120px;
