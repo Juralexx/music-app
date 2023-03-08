@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import Icon from './tools/icons/Icon'
 import { Logo } from './tools/Logo'
-import ThemeToggle from './tools/theme/ThemeToggle'
+import Equalizer from './equalizer/Equalizer'
 
 const Sidebar: React.FC = () => {
     return (
@@ -10,21 +10,24 @@ const Sidebar: React.FC = () => {
             <SideBarHeader>
                 <Logo className='main__logo' />
                 <p>Musics</p>
-                <ThemeToggle />
+                <Equalizer />
             </SideBarHeader>
             <SideBarBody>
                 <div className='side__title'>Menu</div>
                 <NavLink to="/" className='side__item'>
-                    <Icon name="LayoutRightPanelTwo" /> Accueil
+                    <Icon name="LayoutRightPanelTwo" /> <span>Home</span>
                 </NavLink>
                 <NavLink to="/songs" className='side__item'>
-                    <Icon name="MusicFile" /> Chansons
+                    <Icon name="MusicFile" /> <span>Songs</span>
                 </NavLink>
                 <NavLink to="/artists" className='side__item'>
-                    <Icon name="Playlist2" /> Artistes
+                    <Icon name="Playlist2" /> <span>Artists</span>
                 </NavLink>
                 <NavLink to="/albums" className='side__item'>
-                    <Icon name="Playlist" /> Albums
+                    <Icon name="CD" /> <span>Albums</span>
+                </NavLink>
+                <NavLink to="/playlists" className='side__item'>
+                    <Icon name="Playlist" /> <span>Playlists</span>
                 </NavLink>
             </SideBarBody>
         </SideBar>
@@ -39,9 +42,8 @@ const SideBar = styled.div`
     min-width        : 20%;
     max-width        : 400px;
     height           : 100vh;
-    background-color : var(--content-light);
-    box-shadow       : var(--shadow-left);
-    border-right     : 1px solid var(--light-border);
+    background-color : var(--bar);
+    box-shadow       : var(--shadow-dark);
 
     @media (max-width: 992px) {
         width     : 100%;
@@ -101,6 +103,10 @@ const SideBarBody = styled.div`
         padding     : 17px 20px;
         color       : var(--text);
 
+        span {
+            padding-top : 4px;
+        }
+
         svg {
             width        : 20px;
             height       : 20px;
@@ -123,17 +129,20 @@ const SideBarBody = styled.div`
             border-bottom   : 1px solid var(--light-border);
 
             &:hover, &.active {
-                color         : var(--text);
-                background    : var(--content-light);
+                color         : var(--primary);
+                background    : transparent;
                 border-bottom : 1px solid var(--primary);
+            }
+        }
+
+        @media(max-width: 768px) {
+            svg {
+                display : none;
             }
         }
 
         @media (max-width: 576px) {
             padding : 0 7px;
-            svg {
-                display : none;
-            }
         }
     }
 `
