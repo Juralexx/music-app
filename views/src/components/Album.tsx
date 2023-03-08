@@ -8,16 +8,17 @@ interface Props {
 }
 
 const Album: React.FC<Props> = ({ album, onClick }) => {
+    const { picture } = album.songs[0].metadatas.common
     return (
         <AlbumItem onClick={onClick}>
             <div className='album__item-left'>
-                <Icon name="CD" className='album__item-icon' />
+                {picture ? <img src={picture} alt={album.title} className='album__item-picture' /> : <Icon name="CD" className='album__item-icon' />}
                 <div className='album__item-infos'>
                     <div className='album__item-title'>
                         {album.title || 'Albums inconnus'}
                     </div>
                     <div className='album__item-artist'>
-                        <span>{album.artist || 'Artiste inconnu'}</span>
+                        <span>{album.artist || 'Unknown artist'}</span>
                         <span>{album.artist && album.year && '|'}</span>
                         <span>{album.year && album.year}</span>
                     </div>
@@ -63,11 +64,20 @@ const AlbumItem = styled.div`
         align-items : center;
     }
 
+    .album__item-picture {
+        height        : 50px;
+        width         : 50px;
+        object-fit    : cover;
+        border-radius : var(--rounded-md);
+    }
+
     .album__item-icon {
         padding          : 12px;
         border-radius    : var(--rounded-md);
         min-height       : 50px;
+        height           : 50px;
         min-width        : 50px;
+        width            : 50px;
         color            : var(--svg);
         background-color : var(--x-light);
     }
