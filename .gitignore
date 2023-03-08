@@ -15,6 +15,7 @@ data.json
 /data
 /albums
 /albums-compressed
+/playlists
 
 # misc
 .DS_Store
