@@ -16,8 +16,8 @@ const Songs: React.FC = () => {
 
     return (
         <ListContainer>
-            <h2>Toutes les chansons <span>{musics.all.length}</span></h2>
-            <div className='list__'>
+            <h2>All songs <span>{musics.all.length}</span></h2>
+            <div className='__list'>
                 <div className='list__container' ref={songListRef}>
                     {!isLoading ? (
                         Object.values(musics.sorted).map((arr, i: number) => {
@@ -30,7 +30,12 @@ const Songs: React.FC = () => {
                                         {arr.map((music: { [key: string]: any }, j: number) => {
                                             return (
                                                 track.song._id !== music._id ? (
-                                                    <Song key={j} music={music} />
+                                                    <Song
+                                                        key={j}
+                                                        music={music}
+                                                        context={{ name: 'all' }}
+                                                        contextSongs={musics.all}
+                                                    />
                                                 ) : (
                                                     <SongActive key={j} />
                                                 )
@@ -98,7 +103,7 @@ const ListContainer = styled.div`
         }
     }
 
-    .list__ {
+    .__list {
         display        : flex;
         height         : 100%;
         padding-bottom : 50px;
