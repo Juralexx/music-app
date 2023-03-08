@@ -66,7 +66,7 @@ export const IconInput = (props) => {
 const InputIcon = styled.div`
     position      : relative;
     width         : 350px;
-    height        : 44px;
+    height        : 40px;
     color         : var(--input-text);
     background    : var(--input);
     border-radius : var(--rounded-full);
@@ -75,7 +75,7 @@ const InputIcon = styled.div`
         display       : block;
         width         : 100%;
         height        : 100%;
-        padding       : 4px 12px 4px 20px;
+        padding       : 9px 12px 6px 20px;
         border-radius : var(--rounded-full);
         outline       : none;
         background    : transparent;
@@ -116,7 +116,7 @@ const InputIcon = styled.div`
     }
     &.is_end_icon {
         input {
-            padding : 6px 46px 6px 20px;
+            padding : 9px 46px 6px 20px;
         }
     }
 
@@ -153,7 +153,7 @@ const InputIcon = styled.div`
 
     .svg_container {
         position      : absolute;
-        bottom        : 8px;
+        bottom        : 7px;
         right         : 10px;
         padding       : 5px;
         border-radius : 20px;
