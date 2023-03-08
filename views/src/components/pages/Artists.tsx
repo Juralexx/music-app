@@ -1,18 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { LoadingContext, MusicsContext } from '../../AppContext'
+import { IArtist } from '../../types/types'
 import AlphaScrollbar from '../AlphaScrollbar'
 import Artist from '../Artist'
 import ArtistSongs from '../ArtistSongs'
-import { groupeArtistsByAlphabeticalOrder } from '../tools/functions'
-
-export interface ArtistInterface {
-    active: boolean,
-    artist: {
-        name: string,
-        songs: any[]
-    }
-}
+import { groupeArtistsByAlphabeticalOrder } from '../functions/functions'
 
 const Artists: React.FC = () => {
     const { musics } = React.useContext(MusicsContext)
@@ -22,12 +15,12 @@ const Artists: React.FC = () => {
     const artistsListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
     const alphabeticalRef = React.useRef([]) as React.MutableRefObject<(HTMLDivElement[])>
 
-    const [artist, setArtist] = React.useState<ArtistInterface>({ active: false, artist: musics.artists[0] })
+    const [artist, setArtist] = React.useState<IArtist.Props>({ active: false, ...musics.artists[0] })
 
     return (
         <ListContainer>
-            <h2>Artistes <span>{Object.keys(musics.artists).length}</span></h2>
-            <div className='list__'>
+            <h2>Artists <span>{Object.keys(musics.artists).length}</span></h2>
+            <div className='__list'>
                 <div className='list__container' ref={artistsListRef}>
                     {!isLoading ? (
                         Object.values(artists).map((arr, i) => {
@@ -37,12 +30,12 @@ const Artists: React.FC = () => {
                                         <div className='list__container-letter'>
                                             {Object.keys(musics.sorted)[i]}
                                         </div>
-                                        {arr.map((artist: ArtistInterface["artist"], j: number) => {
+                                        {arr.map((artist: IArtist.Props, j: number) => {
                                             return (
                                                 <Artist
                                                     key={j}
                                                     artist={artist}
-                                                    onClick={() => setArtist({ active: true, artist: artist })}
+                                                    onClick={() => setArtist({ ...artist, active: true })}
                                                 />
                                             )
                                         })}
@@ -70,7 +63,7 @@ const Artists: React.FC = () => {
                     childrenDivsRef={alphabeticalRef}
                 />
             </div>
-            {artist.artist !== undefined &&
+            {artist?.songs && artist?.songs.length > 0 &&
                 <ArtistSongs
                     artist={artist}
                     setArtist={setArtist}
@@ -111,7 +104,7 @@ const ListContainer = styled.div`
         }
     }
 
-    .list__ {
+    .__list {
         display        : flex;
         height         : 100%;
         padding-bottom : 50px;
