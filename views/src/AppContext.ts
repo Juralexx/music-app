@@ -1,4 +1,5 @@
 import React from 'react'
+import { IPlaylist } from './types/types'
 
 type MusicsContextType = {
     musics: {
@@ -13,7 +14,9 @@ type MusicsContextType = {
             [key: string]: any
         }
     },
-    setMusics: React.Dispatch<React.SetStateAction<{ all: object[], sorted: { [key: string]: any }, artists: { [key: string]: any }, albums: { [key: string]: any } }>>
+    setMusics: React.Dispatch<React.SetStateAction<{ all: object[], sorted: { [key: string]: any }, artists: { [key: string]: any }, albums: { [key: string]: any } }>>,
+    playlists: Array<IPlaylist.Props>,
+    setPlaylists: React.Dispatch<React.SetStateAction<Array<IPlaylist.Props>>>
 }
 
 const IMusicsContextTypeState = {
@@ -23,7 +26,9 @@ const IMusicsContextTypeState = {
         artists: {},
         albums: {}
     },
-    setMusics: () => { }
+    setMusics: () => { },
+    playlists: [],
+    setPlaylists: () => { }
 }
 
 export const MusicsContext = React.createContext<MusicsContextType>(IMusicsContextTypeState)
@@ -119,11 +124,15 @@ export const PlayerPropsContext = React.createContext<PlayerPropsContextType>(IP
  */
 
 type PlayerContextType = {
-    player: HTMLMediaElement | null
+    player: HTMLMediaElement | null,
+    audioContext: AudioContext | undefined,
+    source: MediaElementAudioSourceNode | undefined
 }
 
 const IPlayerContextTypeState = {
-    player: null
+    player: null,
+    audioContext: undefined,
+    source: undefined
 }
 
 export const PlayerContext = React.createContext<PlayerContextType>(IPlayerContextTypeState)
