@@ -12,7 +12,7 @@ const usePlayer = (player) => {
     })
 
     React.useEffect(() => {
-        window.addEventListener('load', () => {
+        const applyStorages = () => {
             const musicStorage = JSON.parse(localStorage.getItem('music'))
             if (Object.keys(musicStorage).length > 0) {
                 setTimeRange({
@@ -22,15 +22,30 @@ const usePlayer = (player) => {
                 })
                 player.currentTime = musicStorage?.currentTime
             }
-        })
-        window.addEventListener('beforeunload', () => {
+            const volumeStorage = localStorage.getItem('volume')
+            if (volumeStorage) {
+                setVolume({ muted: volumeStorage > 0 ? false : true, rate: volumeStorage })
+                player.volume = volumeStorage
+            }
+        }
+        window.addEventListener('load', applyStorages);
+        return () => window.removeEventListener('load', applyStorages);
+    }, [player])
+
+    React.useEffect(() => {
+        const storeMusicPropsBeforeOnload = () => {
             const musicStorage = JSON.parse(localStorage.getItem('music'))
             localStorage.setItem('music', JSON.stringify({
                 ...musicStorage,
                 currentTime: player.currentTime,
                 remainingTime: (player.duration - player.currentTime)
             }))
-        })
+        }
+        window.addEventListener('beforeunload', storeMusicPropsBeforeOnload);
+        return () => window.removeEventListener('beforeunload', storeMusicPropsBeforeOnload);
+    }, [player])
+
+    React.useEffect(() => {
         player?.addEventListener('pause', () => {
             const musicStorage = JSON.parse(localStorage.getItem('music'))
             localStorage.setItem('music', JSON.stringify({
@@ -58,6 +73,7 @@ const usePlayer = (player) => {
             if (player.volume === 0) {
                 setVolume({ muted: true, rate: player.volume })
             } else setVolume({ muted: false, rate: player.volume })
+            localStorage.setItem('volume', player.volume)
         })
     }, [player])
 
