@@ -15,7 +15,7 @@ const Album: React.FC<Props> = ({ album, onClick }) => {
                 {picture ? <img src={picture} alt={album.title} className='album__item-picture' /> : <Icon name="CD" className='album__item-icon' />}
                 <div className='album__item-infos'>
                     <div className='album__item-title'>
-                        {album.title || 'Albums inconnus'}
+                        {album.title || 'Unknown albums'}
                     </div>
                     <div className='album__item-artist'>
                         <span>{album.artist || 'Unknown artist'}</span>

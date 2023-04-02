@@ -14,7 +14,7 @@ const AlbumSongs: React.FC<Props> = ({ album, setAlbum }) => {
         <ListContainer className={album.active ? 'vanish-right' : 'vanish-left'}>
             <div className='album-list__title' onClick={() => setAlbum((prev: IAlbum.Props) => ({ ...prev, active: false }))}>
                 <Icon name="DoubleArrowLeft" />
-                <h2>{album.title || 'Albums inconnus'}</h2>
+                <h2>{album.title || 'Unknown albums'}</h2>
             </div>
             <div className='album-list__container'>
                 {album.active &&
