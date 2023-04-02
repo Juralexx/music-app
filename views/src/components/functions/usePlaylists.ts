@@ -20,7 +20,7 @@ const usePlaylists = () => {
                             const promise: any[] = res.data.map(async (file: string) => {
                                 return await axios({
                                     method: 'GET',
-                                    url: `${process.env.REACT_APP_API_URL}/playlists/${file}`,
+                                    url: `${process.env.REACT_APP_API_URL}/api/playlists/${file}`,
                                     headers: {
                                         'Authorization': process.env.REACT_APP_ACCESS_TOKEN
                                     }
