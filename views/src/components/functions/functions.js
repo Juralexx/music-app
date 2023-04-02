@@ -59,7 +59,7 @@ export const onPlayerClick = (track, setTrack, player) => {
 
 export const changeSong = (direction, track) => {
     const songs = track.context.songs
-    if (songs.length > 0) {
+    if (songs?.length > 0) {
         const index = songs.findIndex(el => el._id === track.song._id)
         if (index !== null && index !== undefined) {
             if (direction === 'forward') {
