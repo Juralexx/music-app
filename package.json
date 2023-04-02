@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "description": "A small music app built using React, Typescript and Express.",
     "type": "module",
-    "main": "server.js",
+    "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon --ext js --max-old-space-size=8192 app.js"
+        "dev": "nodemon --ext js --max-old-space-size=8192 app.js",
+        "start": "node app.js"
     },
     "author": "Alexandre Vurbier",
     "license": "ISC",
@@ -17,11 +18,13 @@
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
         "express-rate-limit": "^6.7.0",
-        "file-type": "^18.2.1",
         "graceful-fs": "^4.2.10",
-        "helmet": "^6.0.1",
-        "music-metadata": "^8.1.3",
-        "nodemon": "^2.0.20",
-        "sharp": "^0.31.3"
+        "helmet": "^6.0.1"
+    },
+    "devDependencies": {
+        "file-type": "^18.2.1",
+        "music-metadata": "^8.1.4",
+        "nodemon": "^2.0.22",
+        "sharp": "^0.32.0"
     }
 }
