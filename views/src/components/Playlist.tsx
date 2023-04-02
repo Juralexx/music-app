@@ -78,7 +78,11 @@ const Playlist = ({ playlist, setPlaylist }: Props) => {
                                         contextSongs={playlist.songs}
                                     />
                                 ) : (
-                                    <SongActive key={i} />
+                                    <SongActive
+                                        key={i}
+                                        context={{ name: 'playlist', _id: playlist._id, playlist: playlist.name }}
+                                        contextSongs={playlist.songs}
+                                    />
                                 )
                             )
                         })}

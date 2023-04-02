@@ -134,7 +134,10 @@ const Search: React.FC<Props> = ({ isSearching, setSearching }) => {
                                             contextSongs={musics.all}
                                         />
                                     ) : (
-                                        <SongActive />
+                                        <SongActive
+                                            context={{ name: "all" }}
+                                            contextSongs={musics.all}
+                                        />
                                     ))
                                 }
                                 {element.type === 'album' &&

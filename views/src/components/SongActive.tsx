@@ -7,7 +7,12 @@ import PlayerIcon from './PlayerIcon'
 import { AudioLoader, AudioLoaderActive } from './tools/loader/AudioLoader'
 import { timeFormat } from './tools/Utils'
 
-const SongActive: React.FC = () => {
+interface Props {
+    context: Record<string, any>,
+    contextSongs: Array<any>
+}
+
+const SongActive = ({ context, contextSongs }: Props) => {
     const { musics } = React.useContext(MusicsContext)
     const { track, setTrack } = React.useContext(TrackContext)
     const { player } = React.useContext(PlayerContext)
@@ -19,8 +24,8 @@ const SongActive: React.FC = () => {
     return (
         <SongItem className={`music__item active`}
             onClick={() => {
-                onMusicClick(track, setTrack, track.song, player, musics.all)
-                localStorage.setItem('musicContext', JSON.stringify({ name: 'all' }))
+                onMusicClick(track, setTrack, track.song, player, { ...context, songs: contextSongs })
+                localStorage.setItem('musicContext', JSON.stringify(context))
             }}
         >
             <div className='music__item-left'>
