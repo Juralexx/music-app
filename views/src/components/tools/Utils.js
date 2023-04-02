@@ -972,7 +972,6 @@ export const returnURLsInText = (text) => {
     let arr = []
     while (regexp.test(txt)) {
         let matched = regexp.exec(txt)[0]
-        console.log(matched)
         arr.push(matched)
         txt = txt.replace(matched, '')
     }
