@@ -37,7 +37,11 @@ const Songs: React.FC = () => {
                                                         contextSongs={musics.all}
                                                     />
                                                 ) : (
-                                                    <SongActive key={j} />
+                                                    <SongActive
+                                                        key={j}
+                                                        context={{ name: 'all' }}
+                                                        contextSongs={musics.all}
+                                                    />
                                                 )
                                             )
                                         })}

@@ -84,7 +84,7 @@ const Home: React.FC = () => {
                                     </div>
                                     <div className='album__card-infos'>
                                         <div className='album__card-title'>
-                                            {album.title || 'Albums inconnus'}
+                                            {album.title || 'Unknown albums'}
                                         </div>
                                         <div className='album__card-artist'>
                                             <span>{album.artist || 'Unknown artist'}</span>
@@ -128,7 +128,11 @@ const Home: React.FC = () => {
                                         contextSongs={musics.all}
                                     />
                                 ) : (
-                                    <SongActive key={i} />
+                                    <SongActive
+                                        key={i}
+                                        context={{ name: 'all' }}
+                                        contextSongs={musics.all}
+                                    />
                                 )
                             )
                         })}
