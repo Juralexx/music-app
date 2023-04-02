@@ -24,7 +24,6 @@ const MUSICS_ROUTE = process.env.NODE_ENV !== 'production' ? process.env.LOCAL_M
 app.use(cors({
     'credentials': true,
     'origin': FRONT_URL,
-    "Access-Control-Allow-Origin": '*',
     'allowedHeaders': ['Content-Length', 'Content-Type', 'application', 'Authorization'],
     'methods': 'GET, POST, PUT',
     'preflightContinue': false,
@@ -34,20 +33,17 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false,
     // crossOriginResourcePolicy: false,
     crossOriginResourcePolicy: {
-        allowOrigins: ['*']
+        policy: 'cross-origin'
     },
-    originAgentCluster: true
-}))
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
-app.use(
-    helmet.contentSecurityPolicy({
+    originAgentCluster: true,
+    contentSecurityPolicy: {
         useDefaults: true,
         directives: {
             "img-src": ["'self'", "https: data:"],
             "default-src": ["*"]
         }
-    })
-);
+    }
+}))
 app.use(express.json({ limit: '150kb' }))
 app.use(bodyParser.urlencoded({
     extended: false,
@@ -69,8 +65,8 @@ app.use(compression())
  * 
  */
 
-app.use('/musics', limiter, express.static(MUSICS_ROUTE))
-app.use('/albums', express.static('./albums-compressed'))
+app.use('/api/musics', limiter, express.static(MUSICS_ROUTE))
+app.use('/api/albums', express.static('./albums-compressed'))
 
 const isToken = (req, res, next) => {
     if (req.get('Authorization') === process.env.ACCESS_TOKEN) {
@@ -82,8 +78,8 @@ const isToken = (req, res, next) => {
     }
 }
 
-app.use('/playlists', isToken, express.static('./playlists'))
-app.use('/datas', isToken, express.static('./data/datas.json'))
+app.use('/api/playlists', isToken, express.static('./playlists'))
+app.use('/api/datas', isToken, express.static('./data/datas-dev.json'))
 
 const router = express.Router()
 
@@ -194,7 +190,7 @@ if (process.env.NODE_ENV !== 'production') {
 
             const title = file.substring(file.lastIndexOf("\\") + 1, file.lastIndexOf("."))
             const musicPath = file.replace(MUSICS_ROUTE, '')
-            const url = `${SERVER_URL}/musics/${musicPath}`
+            const url = `${SERVER_URL}/api/musics/${musicPath}`
 
             let pictureLocalPath = null
             let pictureServerPath = null
