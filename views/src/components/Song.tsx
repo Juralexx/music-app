@@ -20,7 +20,7 @@ const Song: React.FC<Props> = ({ music, context, contextSongs }) => {
     return (
         <SongItem className='music__item'
             onClick={() => {
-                onMusicClick(track, setTrack, music, player, contextSongs)
+                onMusicClick(track, setTrack, music, player, { ...context, songs: contextSongs })
                 localStorage.setItem('musicContext', JSON.stringify(context))
             }}
         >
