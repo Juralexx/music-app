@@ -29,7 +29,6 @@ const PlayerBar: React.FC = () => {
                         )}
                     </div>
                     <div className="player__action-next" onClick={() => {
-                        console.log(changeSong('forward', track));
                         setTrack(prev => ({ ...prev, song: changeSong('forward', track) }))
                     }}>
                         <Icon name="Forward" />
