@@ -221,12 +221,12 @@ const GlobalStyles = createGlobalStyle`
     }
 
     .vanish-left {
-        left      : 200%;
+        left      : 200% !important;
         transition : .3s ease;
     }
 
     .vanish-right {
-        left      : 0;
+        left      : 0 !important;
         transition : .3s ease;
     }
 `;
