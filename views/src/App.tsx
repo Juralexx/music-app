@@ -33,7 +33,7 @@ const App: React.FC = () => {
                 const fetchMusics = async () => {
                     await axios({
                         method: 'GET',
-                        url: `${process.env.REACT_APP_API_URL}/datas`,
+                        url: `${process.env.REACT_APP_API_URL}/api/datas`,
                         headers: {
                             'Authorization': process.env.REACT_APP_ACCESS_TOKEN
                         }
@@ -93,7 +93,7 @@ const App: React.FC = () => {
      * 
      */
 
-    const player = React.useRef(new Audio(`${process.env.REACT_APP_API_URL}${track.song.url}`)) as React.MutableRefObject<HTMLMediaElement>
+    const player = React.useRef(new Audio(track.song.url)) as React.MutableRefObject<HTMLMediaElement>
     const [audioContext, setAudioContext] = React.useState<AudioContext>()
     const [source, setSource] = React.useState<MediaElementAudioSourceNode>()
 
@@ -152,7 +152,7 @@ const App: React.FC = () => {
                             currentTime: 0,
                             remainingTime: player.current!.duration
                         }))
-                        player.current!.src = `${process.env.REACT_APP_API_URL}${array[index + 1].url}`
+                        player.current!.src = `${array[index + 1].url}`
                         player.current!.load()
                     } else {
                         setTrack(prev => ({ ...prev, song: array[0] }))
@@ -161,7 +161,7 @@ const App: React.FC = () => {
                             currentTime: 0,
                             remainingTime: player.current!.duration
                         }))
-                        player.current!.src = `${process.env.REACT_APP_API_URL}${array[0].url}`
+                        player.current!.src = `${array[0].url}`
                         player.current!.load()
                     }
                 } else if (playerProps.mode === 'shuffle') {
@@ -268,7 +268,7 @@ const RootContainer = styled.div`
         background      : linear-gradient(to bottom, var(--content), var(--content-x-light));
         z-index         : 1000;
         svg {
-            width : 200px;
+            width : 140px;
             color : var(--primary);
         }
     }
